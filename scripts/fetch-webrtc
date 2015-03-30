@@ -1,11 +1,18 @@
 #!/bin/bash
+set -e
 
 mkdir -p /src
 
 cd /src
 
-fetch --nohooks webrtc
-
+if [ -z $1 ] && [ $1 == "android" ]; then
+	echo "Android Build Selected"
+	export GYP_DEFINES="OS=android"
+	fetch webrtc_android
+	. ./src/build/android/envsetup.sh
+else
+	fetch --nohooks webrtc
+fi
 ./src/build/install-build-deps.sh
 
 gclient sync
